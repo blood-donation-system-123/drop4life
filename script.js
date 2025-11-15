@@ -1,74 +1,75 @@
-const DONOR_KEY = 'drop4life_donors';
-const REQ_KEY = 'drop4life_requests';
+// Convert city name to latitude & longitude using Google Maps Geocoding API
+async function getCoordinates(city) {
+    const apiKey = "AIzaSyDkBL-z3h16AxHRkgAMEjti95S8dCi2JNE"; // your API key
+    const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(city)}&key=${apiKey}`);
+    const data = await response.json();
+    if (data.status === "OK") {
+        const location = data.results[0].geometry.location;
+        return { lat: location.lat, lng: location.lng };
+    } else {
+        return null;
+    }
+}
 
-// Unique ID generator
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+// Save donor data
+function saveDonor(event) {
+    event.preventDefault();
 
-// LocalStorage helpers
-const load = (k) => JSON.parse(localStorage.getItem(k) || '[]');
-const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+    const name = document.getElementById("name").value;
+    const blood = document.getElementById("blood").value;
+    const city = document.getElementById("city").value;
+    const contact = document.getElementById("contact").value;
 
-// Refresh donor count & request history
-function refresh() {
-    const donors = load(DONOR_KEY);
-    document.getElementById('messages').innerText = 'Donors registered: ' + donors.length;
+    if (!name || !blood || !city || !contact) {
+        alert("Please fill all fields");
+        return;
+    }
 
-    const reqs = load(REQ_KEY);
-    const h = document.getElementById('historyList');
-    h.innerHTML = '';
-    if (reqs.length === 0) h.innerHTML = '<li>No requests yet</li>';
+    let donors = JSON.parse(localStorage.getItem("donors")) || [];
 
-    reqs.forEach(r => {
-        const li = document.createElement('li');
-        li.textContent = `${r.blood} in ${r.city} — ${r.urgency || 'normal'} [${new Date(r.time).toLocaleString()}]`;
-        if (r.urgency === 'urgent') li.style.color = 'red';
-        h.appendChild(li);
+    donors.push({
+        name: name,
+        blood: blood,
+        city: city,
+        contact: contact
+    });
+
+    localStorage.setItem("donors", JSON.stringify(donors));
+    alert("Donor added successfully!");
+    document.getElementById("donorForm").reset();
+}
+
+// Search donor by blood group & city
+async function searchDonor() {
+    const searchBlood = document.getElementById("searchBlood").value;
+    const searchCity = document.getElementById("searchCity").value;
+
+    let donors = JSON.parse(localStorage.getItem("donors")) || [];
+
+    // Get coordinates of the searched city
+    const searchCoords = await getCoordinates(searchCity);
+    
+    let filtered = donors.filter(d =>
+        d.blood === searchBlood && d.city.toLowerCase() === searchCity.toLowerCase()
+    );
+
+    let resultDiv = document.getElementById("results");
+    resultDiv.innerHTML = "";
+
+    if (filtered.length === 0) {
+        resultDiv.innerHTML = "<p>No matching donor found.</p>";
+        return;
+    }
+
+    filtered.forEach(donor => {
+        resultDiv.innerHTML += `
+            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+                <strong>Name:</strong> ${donor.name}<br>
+                <strong>Blood Group:</strong> ${donor.blood}<br>
+                <strong>City:</strong> ${donor.city}<br>
+                <strong>Contact:</strong> ${donor.contact}
+            </div>
+        `;
     });
 }
 
-// Donor form submission
-document.getElementById('donorForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const d = {
-        id: uid(),
-        name: document.getElementById('donorName').value.trim(),
-        blood: document.getElementById('donorBlood').value,
-        city: document.getElementById('donorCity').value.trim().toLowerCase(),
-        contact: document.getElementById('donorContact').value.trim(),
-        avail: document.getElementById('donorAvail').value
-    };
-    const arr = load(DONOR_KEY);
-    arr.push(d);
-    save(DONOR_KEY, arr);
-    alert('Donor saved (demo)');
-    e.target.reset();
-    refresh();
-});
-
-// Request form submission
-document.getElementById('requestForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const r = {
-        id: uid(),
-        blood: document.getElementById('reqBlood').value,
-        city: document.getElementById('reqCity').value.trim().toLowerCase(),
-        urgency: document.getElementById('reqUrgency').value,
-        contact: document.getElementById('reqContact').value,
-        time: new Date().toISOString()
-    };
-    const arr = load(REQ_KEY);
-    arr.unshift(r);
-    save(REQ_KEY, arr);
-    alert('Search started (demo)');
-    findAndShow(r);
-    e.target.reset();
-    refresh();
-});
-
-// Function to search and display donors (merging your old logic + availability + localStorage)
-function searchDonors() {
-    const bloodGroup = document.getElementById("bloodGroup").value;
-    const location = document.getElementById("location").value.trim().toLowerCase();
-    const resultsBox = document.getElementById("results");
-
-    resultsBox.innerHTML = ""; /
