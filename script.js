@@ -1,27 +1,17 @@
-// -------------------------------
-// Google Places Autocomplete Setup
-// -------------------------------
-function initAutocomplete() {
-    const donorInput = document.getElementById('donorCity');
-    const reqInput = document.getElementById('reqCity');
-
-    new google.maps.places.Autocomplete(donorInput, { types: ['(cities)'] });
-    new google.maps.places.Autocomplete(reqInput, { types: ['(cities)'] });
-}
-
-// -------------------------------
-// Local Storage Keys & Utils
-// -------------------------------
+// Keys for local storage
 const DONOR_KEY = 'drop4life_donors';
 const REQ_KEY = 'drop4life_requests';
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
+// Generate unique ID
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+
+// Load from localStorage
 const load = (key) => JSON.parse(localStorage.getItem(key) || '[]');
+
+// Save to localStorage
 const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
-// -------------------------------
-// Refresh Donors & Requests Display
-// -------------------------------
+// Refresh donor count and request history
 function refresh() {
     const donors = load(DONOR_KEY);
     document.getElementById('messages').innerText = 'Donors registered: ' + donors.length;
@@ -29,77 +19,70 @@ function refresh() {
     const reqs = load(REQ_KEY);
     const h = document.getElementById('historyList');
     h.innerHTML = '';
-    if (reqs.length === 0) h.innerHTML = '<li>No requests yet</li>';
+    if(reqs.length === 0) h.innerHTML = '<li>No requests yet</li>';
+
     reqs.forEach(r => {
         const li = document.createElement('li');
-        li.textContent = `${r.blood} in ${r.city} — ${r.urgency || 'normal'}`;
+        li.textContent = r.blood + ' in ' + r.city + ' — ' + (r.urgency || 'normal');
         h.appendChild(li);
     });
 }
 
-// -------------------------------
-// Donor Form Submission
-// -------------------------------
+// Donor registration form
 document.getElementById('donorForm').addEventListener('submit', e => {
     e.preventDefault();
-
     const d = {
         id: uid(),
         name: document.getElementById('donorName').value.trim(),
         blood: document.getElementById('donorBlood').value,
-        city: document.getElementById('donorCity').value.trim(),
+        city: document.getElementById('donorCity').value.trim().toLowerCase(),
         contact: document.getElementById('donorContact').value.trim(),
         avail: document.getElementById('donorAvail').value
     };
-
     const arr = load(DONOR_KEY);
     arr.push(d);
     save(DONOR_KEY, arr);
-
     alert('Donor saved (demo)');
     e.target.reset();
     refresh();
 });
 
-// -------------------------------
-// Request Form Submission
-// -------------------------------
+// Request blood form
 document.getElementById('requestForm').addEventListener('submit', e => {
     e.preventDefault();
-
     const r = {
         id: uid(),
         blood: document.getElementById('reqBlood').value,
-        city: document.getElementById('reqCity').value.trim(),
+        city: document.getElementById('reqCity').value.trim().toLowerCase(),
         urgency: document.getElementById('reqUrgency').value,
         contact: document.getElementById('reqContact').value,
         time: new Date().toISOString()
     };
-
     const arr = load(REQ_KEY);
     arr.unshift(r);
     save(REQ_KEY, arr);
-
     alert('Search started (demo)');
     findAndShow(r);
     e.target.reset();
     refresh();
 });
 
-// -------------------------------
-// Search & Display Matching Donors
-// -------------------------------
+// Find and display matching donors
 function findAndShow(request) {
     const donors = load(DONOR_KEY);
-    let matches = donors.filter(d => d.blood === request.blood && d.city.toLowerCase() === request.city.toLowerCase() && d.avail === 'available');
+    let matches = donors.filter(d =>
+        d.blood === request.blood &&
+        d.city === request.city &&
+        d.avail === 'available'
+    );
 
-    // fallback to any donor with same blood
-    if (matches.length === 0) matches = donors.filter(d => d.blood === request.blood && d.avail === 'available');
+    // If no city match, show donors with same blood group
+    if(matches.length === 0) matches = donors.filter(d => d.blood === request.blood && d.avail === 'available');
 
     const mdiv = document.getElementById('matches');
     mdiv.innerHTML = '';
 
-    if (matches.length === 0) {
+    if(matches.length === 0) {
         mdiv.innerHTML = '<p>No matches found.</p>';
         return;
     }
@@ -118,28 +101,27 @@ function findAndShow(request) {
         mdiv.appendChild(el);
     });
 
-    // mark donor as unavailable
+    // Mark as contacted button
     Array.from(document.querySelectorAll('[data-id]')).forEach(btn => btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-id');
         const arr = load(DONOR_KEY);
         const d = arr.find(x => x.id === id);
-        if (d) {
+        if(d) {
             d.avail = 'unavailable';
             save(DONOR_KEY, arr);
             alert('Marked as unavailable (demo)');
             refresh();
+            findAndShow(request); // refresh matches
         }
     }));
 }
 
-// -------------------------------
-// Initialize Demo Donors if None Exist
-// -------------------------------
+// Initialize sample donors if none
 (function init() {
-    if (!localStorage.getItem(DONOR_KEY)) {
+    if(!localStorage.getItem(DONOR_KEY)){
         save(DONOR_KEY, [
-            { id: uid(), name: 'Asha', blood: 'O+', city: 'Delhi', contact: '9876500001', avail: 'available' },
-            { id: uid(), name: 'Ravi', blood: 'B-', city: 'Delhi', contact: '9876500002', avail: 'available' }
+            { id: uid(), name:'Asha', blood:'O+', city:'delhi', contact:'9876500001', avail:'available' },
+            { id: uid(), name:'Ravi', blood:'B-', city:'delhi', contact:'9876500002', avail:'available' }
         ]);
     }
     refresh();
