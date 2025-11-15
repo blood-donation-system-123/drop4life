@@ -15,6 +15,7 @@
     .flex{display:flex;gap:12px;flex-wrap:wrap}
     .col{flex:1 1 320px}
     footer{text-align:center;padding:12px;color:#666}
+    #matches div{border:1px solid #eee;padding:8px;margin:8px 0;}
   </style>
 </head>
 <body>
@@ -79,13 +80,13 @@
   <footer>Demo: data kept locally in your browser. For production, a server & database are required.</footer>
 
   <!-- Google Maps API -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkBL-z3h16AxHRkgAMEjti95S8dCi2JNE&libraries=places"></script>
 
   <script>
     const DONOR_KEY = 'drop4life_donors';
     const REQ_KEY = 'drop4life_requests';
     const uid = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-    const load = k => JSON.parse(localStorage.getItem(k)||'[]');
+    const load = (k)=> JSON.parse(localStorage.getItem(k)||'[]');
     const save = (k,v)=> localStorage.setItem(k, JSON.stringify(v));
 
     function refresh() {
@@ -95,118 +96,109 @@
       const h = document.getElementById('historyList'); h.innerHTML='';
       if(reqs.length===0) h.innerHTML='<li>No requests yet</li>';
       reqs.forEach(r=>{
-        const li=document.createElement('li'); 
-        li.textContent = r.blood+' in '+r.city+' — '+(r.urgency||'normal'); 
+        const li=document.createElement('li');
+        li.textContent = r.blood+' in '+r.city+' — '+(r.urgency||'normal');
         h.appendChild(li);
       });
     }
 
-    // ------------------ Donor Form with Geocoding ------------------
+    // Register donor
     document.getElementById('donorForm').addEventListener('submit', e=>{
       e.preventDefault();
-      const name = document.getElementById('donorName').value.trim();
-      const blood = document.getElementById('donorBlood').value;
-      const city = document.getElementById('donorCity').value.trim();
-      const contact = document.getElementById('donorContact').value.trim();
-      const avail = document.getElementById('donorAvail').value;
-
-      // Geocode city to lat/lng
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: city }, function(results, status) {
-        if (status === 'OK') {
-          const lat = results[0].geometry.location.lat();
-          const lng = results[0].geometry.location.lng();
-
-          const donor = { id:uid(), name, blood, city: city.toLowerCase(), contact, avail, lat, lng };
-          const arr = load(DONOR_KEY); arr.push(donor); save(DONOR_KEY, arr);
-          alert('Donor saved (demo)');
-          e.target.reset();
-          refresh();
-        } else {
-          alert('Invalid city. Please enter a valid location.');
-        }
-      });
+      const d = { 
+        id:uid(), 
+        name:document.getElementById('donorName').value.trim(),
+        blood:document.getElementById('donorBlood').value, 
+        city:document.getElementById('donorCity').value.trim().toLowerCase(),
+        contact:document.getElementById('donorContact').value.trim(), 
+        avail:document.getElementById('donorAvail').value 
+      };
+      const arr = load(DONOR_KEY); arr.push(d); save(DONOR_KEY,arr); alert('Donor saved (demo)'); e.target.reset(); refresh();
     });
 
-    // ------------------ Request Form ------------------
+    // Request blood
     document.getElementById('requestForm').addEventListener('submit', e=>{
       e.preventDefault();
       const r = { 
-        id:uid(),
-        blood:document.getElementById('reqBlood').value,
+        id:uid(), 
+        blood:document.getElementById('reqBlood').value, 
         city:document.getElementById('reqCity').value.trim().toLowerCase(),
-        urgency:document.getElementById('reqUrgency').value,
-        contact:document.getElementById('reqContact').value,
+        urgency:document.getElementById('reqUrgency').value, 
+        contact:document.getElementById('reqContact').value, 
         time:new Date().toISOString()
       };
-      const arr = load(REQ_KEY); arr.unshift(r); save(REQ_KEY,arr);
-      alert('Search started (demo)');
-      findAndShow(r);
-      e.target.reset();
+      const arr = load(REQ_KEY); arr.unshift(r); save(REQ_KEY,arr); 
+      alert('Search started (demo)'); 
+      findAndShow(r); 
+      e.target.reset(); 
       refresh();
     });
 
-    // ------------------ Search and Display ------------------
-    function getDistance(lat1, lng1, lat2, lng2) {
-      const R = 6371;
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLng = (lng2 - lng1) * Math.PI / 180;
-      const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLng/2)**2;
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c;
-    }
-
-    function findAndShow(request){
-      const donors = load(DONOR_KEY).filter(d=> d.blood===request.blood && d.avail==='available');
-      const mdiv = document.getElementById('matches'); mdiv.innerHTML='';
-
-      if(donors.length===0){ mdiv.innerHTML='<p>No donors found.</p>'; return;}
-
-      // Geocode requester city
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: request.city }, function(results, status){
-        if(status==='OK'){
-          const userLat = results[0].geometry.location.lat();
-          const userLng = results[0].geometry.location.lng();
-
-          donors.forEach(d=> d.distance = getDistance(userLat, userLng, d.lat, d.lng));
-          donors.sort((a,b)=>a.distance - b.distance);
-
-          donors.forEach(d=>{
-            const el = document.createElement('div');
-            el.className = 'card';
-            el.style.marginBottom = '10px';
-            el.style.padding = '8px';
-            el.innerHTML = `
-              <strong>${d.name} (${d.blood})</strong><br>
-              City: ${d.city}<br>
-              Distance: ${d.distance.toFixed(2)} km<br>
-              Contact: ${d.contact}<br>
-              <button onclick="markUnavailable('${d.id}')">Mark Contacted</button>
-            `;
-            mdiv.appendChild(el);
-          });
-        } else { alert('Invalid requester city.'); }
+    // Convert city to coordinates
+    async function getCoordinates(city){
+      return new Promise((resolve,reject)=>{
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({address: city}, (results, status)=>{
+          if(status === 'OK' && results[0]){
+            resolve(results[0].geometry.location);
+          } else {
+            resolve(null);
+          }
+        });
       });
     }
 
-    // ------------------ Mark Contacted ------------------
-    function markUnavailable(id){
-      const arr = load(DONOR_KEY);
-      const donor = arr.find(d=>d.id===id);
-      if(donor){ donor.avail='unavailable'; save(DONOR_KEY, arr); alert('Marked as unavailable'); refresh(); }
+    async function findAndShow(request){
+      const donors = load(DONOR_KEY).filter(d=>d.avail==='available' && d.blood===request.blood);
+      const resultsBox = document.getElementById('matches');
+      resultsBox.innerHTML = '';
+
+      const reqCoord = await getCoordinates(request.city);
+      if(!reqCoord){ resultsBox.innerHTML="<p>Invalid city name.</p>"; return; }
+
+      // Filter donors within ~50km radius
+      const filtered = [];
+      for(const d of donors){
+        const donorCoord = await getCoordinates(d.city);
+        if(donorCoord){
+          const distance = google.maps.geometry.spherical.computeDistanceBetween(reqCoord, donorCoord)/1000; // km
+          if(distance<=50){ // within 50 km
+            filtered.push({...d, distance:distance.toFixed(1)});
+          }
+        }
+      }
+
+      if(filtered.length===0){ resultsBox.innerHTML="<p>No nearby donors found.</p>"; return; }
+
+      filtered.forEach(d=>{
+        const el = document.createElement('div');
+        el.innerHTML = `<strong>${d.name} (${d.blood})</strong><div>City: ${d.city}</div><div>Distance: ${d.distance} km</div><div>Contact: ${d.contact}</div><button data-id="${d.id}">Mark Contacted</button>`;
+        resultsBox.appendChild(el);
+      });
+
+      Array.from(document.querySelectorAll('[data-id]')).forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id=btn.getAttribute('data-id'); 
+          const arr=load(DONOR_KEY); 
+          const d=arr.find(x=>x.id===id); 
+          if(d){ d.avail='unavailable'; save(DONOR_KEY,arr); alert('Marked as unavailable (demo)'); refresh();}
+        });
+      });
     }
 
-    // ------------------ Initialize ------------------
+    // Initialize demo donors if none
     (function init(){
       if(!localStorage.getItem(DONOR_KEY)){
         save(DONOR_KEY, [
-          { id:uid(), name:'Asha', blood:'O+', city:'delhi', contact:'9876500001', avail:'available', lat:28.6139, lng:77.2090 },
-          { id:uid(), name:'Ravi', blood:'B-', city:'delhi', contact:'9876500002', avail:'available', lat:28.6139, lng:77.2090 }
+          { id:uid(), name:'Asha', blood:'O+', city:'delhi', contact:'9876500001', avail:'available' },
+          { id:uid(), name:'Ravi', blood:'B-', city:'delhi', contact:'9876500002', avail:'available' }
         ]);
       }
       refresh();
     })();
   </script>
+
+  <!-- Load Geometry library for distance calculation -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkBL-z3h16AxHRkgAMEjti95S8dCi2JNE&libraries=geometry"></script>
 </body>
 </html>
