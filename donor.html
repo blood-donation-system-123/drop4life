@@ -20,12 +20,10 @@
 </head>
 <body>
 
-  <!-- Navigation bar (same links as main) -->
+  <!-- Updated Navigation (only working links) -->
   <nav>
     <a href="main.html">Home</a>
     <a href="donor.html">Register Donor</a>
-    <a href="request.html">Blood Request</a>
-    <a href="donorlist.html">Donor List</a>
   </nav>
 
   <header>
@@ -75,10 +73,7 @@
 
   <footer>Demo: data kept locally in your browser. For production, use a server & database.</footer>
 
-  <!-- Reuse same script that lives in your index (keeps logic consistent) -->
   <script>
-    // If you already have a shared script.js, you can remove this block and include script.js instead.
-    // This inline script is safe to use if script.js isn't present.
     const DONOR_KEY = 'drop4life_donors';
     const uid = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
     const load = (k)=> JSON.parse(localStorage.getItem(k)||'[]');
@@ -93,7 +88,9 @@
         contact:document.getElementById('donorContact').value.trim(),
         avail:document.getElementById('donorAvail').value
       };
-      const arr = load(DONOR_KEY); arr.push(d); save(DONOR_KEY,arr);
+      const arr = load(DONOR_KEY); 
+      arr.push(d); 
+      save(DONOR_KEY,arr);
       alert('Donor saved (demo)');
       e.target.reset();
     });
