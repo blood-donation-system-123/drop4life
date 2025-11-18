@@ -19,6 +19,7 @@
             color: white;
             padding: 20px;
             font-size: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         /* ✅ LOGO STYLE */
@@ -33,7 +34,6 @@
             background:#b30000;
             padding:15px;
             text-align:center;
-            font-family: Arial, sans-serif;
         }
 
         nav a {
@@ -47,20 +47,62 @@
             margin-top: 30px;
         }
 
+        /* ✅ BUTTONS CONTAINER WITH GRADIENT BACKGROUND */
+        .buttons-section {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 40px 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #ffe6e6, #ffcccc);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
         a.button {
-            display: block;
-            width: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 260px;
             margin: 15px auto;
             padding: 15px;
-            background: #ff3333;
             color: white;
             text-decoration: none;
             border-radius: 8px;
             font-size: 18px;
+            transition: transform 0.2s, opacity 0.2s;
         }
 
-        a.button:hover {
-            background: #cc0000;
+        a.button span {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* ✅ COLOR-CODED BUTTONS */
+        .donor { background: #e60000; }
+        .donor:hover { opacity: 0.85; transform: scale(1.05); }
+
+        .request { background: #ff6600; }
+        .request:hover { opacity: 0.85; transform: scale(1.05); }
+
+        .list { background: #ffcc00; color: #333; }
+        .list:hover { opacity: 0.85; transform: scale(1.05); }
+
+        .how { background: #0066cc; }
+        .how:hover { opacity: 0.85; transform: scale(1.05); }
+
+        .contact { background: #009933; }
+        .contact:hover { opacity: 0.85; transform: scale(1.05); }
+
+        .chart { background: #9933ff; }
+        .chart:hover { opacity: 0.85; transform: scale(1.05); }
+
+        h2 {
+            color: #b30000;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #333;
         }
     </style>
 </head>
@@ -89,13 +131,15 @@
     <h2>Welcome to Drop4Life</h2>
     <p>Select a feature below:</p>
 
-    <!-- ✅ FEATURE BUTTONS -->
-    <a href="donor.html" class="button">Register as Donor</a>
-    <a href="request.html" class="button">Request Blood</a>
-    <a href="donorlist.html" class="button">View Donor List</a>
-    <a href="howitworks.html" class="button">How Blood Donation Works</a>
-    <a href="contact.html" class="button">Contact / Help</a>
-    <a href="compatibility.html" class="button">Blood Types & Chart</a>
+    <!-- ✅ BUTTONS SECTION WITH GRADIENT -->
+    <div class="buttons-section">
+        <a href="donor.html" class="button donor"><span>🩸</span>Register as Donor</a>
+        <a href="request.html" class="button request"><span>🆘</span>Request Blood</a>
+        <a href="donorlist.html" class="button list"><span>📋</span>View Donor List</a>
+        <a href="howitworks.html" class="button how"><span>ℹ️</span>How Blood Donation Works</a>
+        <a href="contact.html" class="button contact"><span>📞</span>Contact / Help</a>
+        <a href="compatibility.html" class="button chart"><span>🩺</span>Blood Types & Chart</a>
+    </div>
 </div>
 
 </body>
