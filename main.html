@@ -11,61 +11,111 @@
             background: #f7f7f7;
             margin: 0;
             padding: 0;
-            text-align: center;
         }
 
+        /* HEADER */
         header {
             background: #b30000;
             color: white;
-            padding: 20px;
-            font-size: 24px;
+            padding: 25px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
+        /* NAVBAR */
         nav {
             background: #b30000;
-            padding: 15px;
             text-align: center;
+            padding: 15px;
         }
-
         nav a {
             color: white;
-            margin: 0 15px;
+            margin: 0 18px;
             text-decoration: none;
             font-size: 18px;
+            font-weight: bold;
         }
-
         nav a:hover {
             opacity: 0.8;
         }
 
-        .container {
-            margin-top: 40px;
+        /* HERO SECTION */
+        .hero {
+            background: url('https://i.imgur.com/uW3oP3s.png') center/cover no-repeat;
+            height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 2px 2px 10px black;
+            font-size: 32px;
+            font-weight: bold;
         }
 
-        a.button {
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        h2 {
+            color: #b30000;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #444;
+            font-size: 17px;
+        }
+
+        /* BUTTONS */
+        .btn {
             display: block;
-            width: 250px;
-            margin: 15px auto;
+            width: 280px;
+            margin: 18px auto;
             padding: 15px;
             background: #ff3333;
             color: white;
             text-decoration: none;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .btn:hover {
+            background: #cc0000;
         }
 
-        a.button:hover {
-            background: #cc0000;
+        /* ABOUT SECTION */
+        .about {
+            margin-top: 40px;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            padding: 15px;
         }
     </style>
 </head>
+
 <body>
 
 <header>
     DROP4LIFE – Blood Donation System
 </header>
 
-<!-- Navigation Bar -->
 <nav>
     <a href="main.html">Home</a>
     <a href="donor.html">Register Donor</a>
@@ -73,15 +123,38 @@
     <a href="donorlist.html">Donor List</a>
 </nav>
 
-<div class="container">
-    <h2>Welcome to Drop4Life</h2>
-    <p>Select a feature below:</p>
-
-    <a href="index.html" class="button">Weather Checker</a>
-    <a href="donor.html" class="button">Register as Donor</a>
-    <a href="request.html" class="button">Request Blood</a>
-    <a href="donorlist.html" class="button">View Donor List</a>
+<!-- HERO BANNER -->
+<div class="hero">
+    Save a Life Today ❤️
 </div>
+
+<!-- MAIN BUTTONS -->
+<div class="container">
+    <a href="donor.html" class="btn">Register as Donor</a>
+    <a href="request.html" class="btn">Request Blood</a>
+    <a href="donorlist.html" class="btn">View Donor List</a>
+</div>
+
+<!-- ABOUT SECTION -->
+<div class="container">
+    <div class="about">
+        <h2>About Drop4Life</h2>
+        <p>
+            Drop4Life is a simple blood donation management system created to help users 
+            register as donors, request blood, and access donor information easily.  
+            All data is stored locally in your browser for demo purposes.
+        </p>
+
+        <p>
+            This project demonstrates how a real blood donation system works – 
+            with donor registration, blood request matching, and searchable donor lists.
+        </p>
+    </div>
+</div>
+
+<footer>
+    © 2025 Drop4Life — Prototype Version
+</footer>
 
 </body>
 </html>
