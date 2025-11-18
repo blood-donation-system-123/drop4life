@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Blood - Drop4Life</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background: #b30000;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .container {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        label { font-size: 16px; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border-radius: 5px;
+            border: 1px solid #999;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #b30000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+        button:hover {
+            background: #900000;
+        }
+        .match-box {
+            padding: 15px;
+            text-align: left;
+            border-radius: 8px;
+            margin-top: 10px;
+            background: #ffeaea;
+            border: 1px solid #b30000;
+        }
+    </style>
+</head>
+<body>
+
+<header>Request Blood – Drop4Life</header>
+
+<!-- Navigation Bar -->
+<nav style="
+    background:#b30000;
+    padding:15px;
+    text-align:center;
+    font-family: Arial, sans-serif;
+">
+    <a href="main.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Home</a>
+    <a href="donor.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Register Donor</a>
+    <a href="request.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Blood Request</a>
+    <a href="donorlist.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Donor List</a>
+</nav>
+
+<div class="container">
+    <h2>Find a Blood Donor</h2>
+
+    <form id="requestForm">
+
+        <label>Required Blood Group:</label>
+        <select id="reqBlood" required>
+            <option value="">Select</option>
+            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+        </select>
+
+        <label>City:</label>
+        <input id="reqCity" required>
+
+        <label>Your Contact:</label>
+        <input id="reqContact" required>
+
+        <button type="submit">Find Donors</button>
+    </form>
+</div>
+
+<h2>Matches Found</h2>
+<div id="matches" style="width:90%; max-width:500px; margin:20px auto;"></div>
+
+<script>
+// Load donors from localStorage
+function getDonors() {
+    return JSON.parse(localStorage.getItem("drop4life_donors")) || [];
+}
+
+document.getElementById("requestForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let blood = document.getElementById("reqBlood").value;
+    let city = document.getElementById("reqCity").value.trim().toLowerCase();
+
+    let donors = getDonors();
+
+    // first: exact city + blood match
+    let matches = donors.filter(d => d.blood === blood && d.city === city && d.avail === "available");
+
+    // second: match blood only (fallback)
+    if (matches.length === 0) {
+        matches = donors.filter(d => d.blood === blood && d.avail === "available");
+    }
+
+    let box = document.getElementById("matches");
+    box.innerHTML = "";
+
+    if (matches.length === 0) {
+        box.innerHTML = "<p>No matching donors found.</p>";
+        return;
+    }
+
+    matches.forEach(d => {
+        box.innerHTML += `
+            <div class="match-box">
+                <strong>${d.name} (${d.blood})</strong><br>
+                City: ${d.city}<br>
+                Contact: ${d.contact}<br>
+                Status: ${d.avail}
+            </div>
+        `;
+    });
+});
+</script>
+
+</body>
+</html>
