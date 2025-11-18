@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact / Help</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #b30000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        nav {
+            background:#b30000;
+            padding:15px;
+            text-align:center;
+        }
+
+        nav a {
+            color:white;
+            margin:0 15px;
+            text-decoration:none;
+            font-size:18px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #b30000;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            background: #fff5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #b30000;
+            border-radius: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background: #b30000;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #800000;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    CONTACT / HELP
+</header>
+
+<nav>
+    <a href="main.html">Home</a>
+    <a href="donor.html">Register Donor</a>
+    <a href="request.html">Blood Request</a>
+    <a href="donorlist.html">Donor List</a>
+    <a href="howitworks.html">How It Works</a>
+    <a href="contact.html">Contact</a>
+    <a href="compatibility.html">Blood Chart</a>
+</nav>
+
+<div class="container">
+    <h2>Need Help?</h2>
+    <div class="info">
+        You can reach out to us anytime through the form below or via email/phone.
+    </div>
+
+    <form action="mailto:youremail@example.com" method="post" enctype="text/plain">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="message">Your Message</label>
+        <textarea id="message" name="message" rows="6" required></textarea>
+
+        <button type="submit">Send Message</button>
+    </form>
+
+    <div class="info">
+        📞 Phone: +91-1234567890<br>
+        📧 Email: support@yourwebsite.com
+    </div>
+</div>
+
+</body>
+</html>
