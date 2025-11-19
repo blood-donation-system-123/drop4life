@@ -1,90 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donor List - Drop4Life</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        header {
-            background: #b30000;
-            color: white;
-            padding: 20px;
-            font-size: 24px;
-        }
-        table {
-            width: 90%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background: #b30000;
-            color: white;
-        }
-        tr:hover {
-            background: #ffe5e5;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donor List</title>
+  <style>
+      body { font-family: Arial; padding: 20px; background: #f7f7f7; }
+      .card { background: white; padding: 15px; margin: 10px 0; border-radius: 10px; }
+  </style>
 </head>
 <body>
 
-<header>Donor List – Drop4Life</header>
+<h2>All Registered Donors</h2>
 
-<nav style="background:#b30000; padding:15px; text-align:center;">
-    <a href="main.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Home</a>
-    <a href="donor.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Register Donor</a>
-    <a href="request.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Blood Request</a>
-    <a href="donorlist.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Donor List</a>
-</nav>
-
-<h2>Registered Donors</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Blood Group</th>
-            <th>City</th>
-            <th>Phone</th>
-        </tr>
-    </thead>
-    <tbody id="donorTable"></tbody>
-</table>
+<div id="donorList"></div>
 
 <script>
-// Load from correct key (same as donor.html)
 function loadDonors() {
     let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
-    let table = document.getElementById("donorTable");
+    let container = document.getElementById("donorList");
 
-    table.innerHTML = "";
+    if (donors.length === 0) {
+        container.innerHTML = "<p>No donors found.</p>";
+        return;
+    }
 
     donors.forEach(d => {
-        let row = `
-            <tr>
-                <td>${d.name}</td>
-                <td>${d.age}</td>
-                <td>${d.blood}</td>
-                <td>${d.city}</td>
-                <td>${d.contact}</td>
-            </tr>
+        container.innerHTML += `
+            <div class="card">
+                <b>Name:</b> ${d.name}<br>
+                <b>Age:</b> ${d.age}<br>
+                <b>Blood Group:</b> ${d.blood}<br>
+                <b>City:</b> ${d.city}<br>
+                <b>Phone:</b> ${d.phone}<br>
+                <b>Status:</b> ${d.avail}
+            </div>
         `;
-        table.innerHTML += row;
     });
 }
 
