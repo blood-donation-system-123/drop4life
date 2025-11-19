@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Donor - Drop4Life</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background: #b30000;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+
+        form {
+            background: white;
+            padding: 25px;
+            width: 350px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input, select {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #b30000;
+            color: white;
+            border: none;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #990000;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Register as Donor – Drop4Life
+</header>
+
+<!-- NAVIGATION BAR -->
+<nav style="
+    background:#b30000;
+    padding:15px;
+    text-align:center;
+    font-family: Arial, sans-serif;
+">
+    <a href="main.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Home</a>
+    <a href="donor.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Register Donor</a>
+    <a href="request.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Blood Request</a>
+    <a href="donorlist.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Donor List</a>
+</nav>
+
+<form id="donorForm">
+    <h2>Donor Registration</h2>
+
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="number" id="age" placeholder="Age" required>
+
+    <select id="blood" required>
+        <option value="">Select Blood Group</option>
+        <option>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>O+</option><option>O-</option>
+        <option>AB+</option><option>AB-</option>
+    </select>
+
+    <input type="text" id="city" placeholder="City" required>
+    <input type="text" id="contact" placeholder="Phone Number" required>
+
+    <button type="button" onclick="saveDonor()">Submit</button>
+</form>
+
+<script>
+function saveDonor() {
+    let name = document.getElementById("name").value.trim();
+    let age = document.getElementById("age").value.trim();
+    let blood = document.getElementById("blood").value.trim();
+    let city = document.getElementById("city").value.trim().toLowerCase();
+    let contact = document.getElementById("contact").value.trim();
+
+    if (!name || !age || !blood || !city || !contact) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    let donor = {
+        name: name,
+        age: age,
+        blood: blood,
+        city: city,
+        contact: contact,
+        avail: "available"
+    };
+
+    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
+    donors.push(donor);
+    localStorage.setItem("drop4life_donors", JSON.stringify(donors));
+
+    alert("Donor Registered Successfully!");
+
+    document.getElementById("donorForm").reset();
+}
+</script>
+
+</body>
+</html>
