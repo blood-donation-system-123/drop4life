@@ -58,7 +58,7 @@
     Register as Donor – Drop4Life
 </header>
 
-<!-- ✅ NAVIGATION BAR -->
+<!-- NAVIGATION BAR -->
 <nav style="
     background:#b30000;
     padding:15px;
@@ -76,32 +76,46 @@
 
     <input type="text" id="name" placeholder="Full Name" required>
     <input type="number" id="age" placeholder="Age" required>
-    <select id="bloodGroup" required>
+
+    <select id="blood" required>
         <option value="">Select Blood Group</option>
         <option>A+</option><option>A-</option>
         <option>B+</option><option>B-</option>
         <option>O+</option><option>O-</option>
         <option>AB+</option><option>AB-</option>
     </select>
+
     <input type="text" id="city" placeholder="City" required>
-    <input type="text" id="phone" placeholder="Phone Number" required>
+    <input type="text" id="contact" placeholder="Phone Number" required>
 
     <button type="button" onclick="saveDonor()">Submit</button>
 </form>
 
 <script>
 function saveDonor() {
+    let name = document.getElementById("name").value.trim();
+    let age = document.getElementById("age").value.trim();
+    let blood = document.getElementById("blood").value.trim();
+    let city = document.getElementById("city").value.trim().toLowerCase();
+    let contact = document.getElementById("contact").value.trim();
+
+    if (!name || !age || !blood || !city || !contact) {
+        alert("Please fill all fields!");
+        return;
+    }
+
     let donor = {
-        name: document.getElementById("name").value,
-        age: document.getElementById("age").value,
-        bloodGroup: document.getElementById("bloodGroup").value,
-        city: document.getElementById("city").value,
-        phone: document.getElementById("phone").value
+        name: name,
+        age: age,
+        blood: blood,
+        city: city,
+        contact: contact,
+        avail: "available"
     };
 
-    let donors = JSON.parse(localStorage.getItem("donors")) || [];
+    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
     donors.push(donor);
-    localStorage.setItem("donors", JSON.stringify(donors));
+    localStorage.setItem("drop4life_donors", JSON.stringify(donors));
 
     alert("Donor Registered Successfully!");
 
@@ -111,4 +125,3 @@ function saveDonor() {
 
 </body>
 </html>
-
