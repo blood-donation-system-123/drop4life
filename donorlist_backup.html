@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor List - Drop4Life</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background: #b30000;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #b30000;
+            color: white;
+        }
+
+        tr:hover {
+            background: #ffe5e5;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Donor List – Drop4Life
+</header>
+
+<!-- Navigation Bar -->
+<nav style="
+    background:#b30000;
+    padding:15px;
+    text-align:center;
+    font-family: Arial, sans-serif;
+">
+    <a href="main.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Home</a>
+    <a href="donor.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Register Donor</a>
+    <a href="request.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Blood Request</a>
+    <a href="donorlist.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Donor List</a>
+</nav>
+
+<h2>Registered Donors</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Blood Group</th>
+            <th>City</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody id="donorTable"></tbody>
+</table>
+
+<script>
+function loadDonors() {
+    // ✔ FIXED STORAGE KEY
+    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
+    let table = document.getElementById("donorTable");
+
+    table.innerHTML = "";
+
+    donors.forEach(donor => {
+        let row = `
+            <tr>
+                <td>${donor.name}</td>
+                <td>${donor.age}</td>
+                <td>${donor.bloodGroup}</td>
+                <td>${donor.city}</td>
+                <td>${donor.phone}</td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+}
+
+loadDonors();
+</script>
+
+</body>
+</html>
