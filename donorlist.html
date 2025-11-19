@@ -1,31 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Donor List</title>
-  <style>
-      body { font-family: Arial; padding: 20px; background: #f7f7f7; }
-      .card { background: white; padding: 15px; margin: 10px 0; border-radius: 10px; }
-  </style>
+<meta charset="UTF-8">
+<title>Donor List - Drop4Life</title>
+
+<style>
+    body { 
+        font-family: Arial; 
+        background:#f7f7f7; 
+        padding:20px; 
+    }
+
+    .search-box {
+        background:white;
+        padding:15px;
+        border-radius:10px;
+        width:90%;
+        max-width:500px;
+        margin:auto;
+        box-shadow:0 0 10px #ccc;
+    }
+
+    input {
+        width:100%;
+        padding:10px;
+        margin:10px 0;
+        border-radius:5px;
+        border:1px solid #aaa;
+    }
+
+    .card {
+        background:white; 
+        padding:15px; 
+        margin:10px 0; 
+        border-radius:10px;
+        box-shadow:0 0 10px #ccc;
+    }
+</style>
+
 </head>
 <body>
 
-<h2>All Registered Donors</h2>
+<h2 style="text-align:center;">All Registered Donors</h2>
 
-<div id="donorList"></div>
+<div class="search-box">
+    <input type="text" id="searchName" placeholder="Search by Name">
+    <input type="text" id="searchCity" placeholder="Search by City">
+    <input type="text" id="searchBlood" placeholder="Search by Blood Group (A+, O-, AB+...)">
+</div>
+
+<div id="donorList" style="margin-top:20px;"></div>
 
 <script>
-function loadDonors() {
-    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
-    let container = document.getElementById("donorList");
 
-    if (donors.length === 0) {
+function loadDonors() {
+    return JSON.parse(localStorage.getItem("drop4life_donors")) || [];
+}
+
+function displayDonors(list) {
+    let container = document.getElementById("donorList");
+    container.innerHTML = "";
+
+    if (list.length === 0) {
         container.innerHTML = "<p>No donors found.</p>";
         return;
     }
 
-    donors.forEach(d => {
+    list.forEach(d => {
         container.innerHTML += `
             <div class="card">
                 <b>Name:</b> ${d.name}<br>
@@ -39,7 +80,28 @@ function loadDonors() {
     });
 }
 
-loadDonors();
+function filterDonors() {
+    let donors = loadDonors();
+
+    let name = document.getElementById("searchName").value.toLowerCase();
+    let city = document.getElementById("searchCity").value.toLowerCase();
+    let blood = document.getElementById("searchBlood").value.toUpperCase();
+
+    let filtered = donors.filter(d => 
+        d.name.toLowerCase().includes(name) &&
+        d.city.includes(city) &&
+        d.blood.includes(blood)
+    );
+
+    displayDonors(filtered);
+}
+
+document.getElementById("searchName").addEventListener("input", filterDonors);
+document.getElementById("searchCity").addEventListener("input", filterDonors);
+document.getElementById("searchBlood").addEventListener("input", filterDonors);
+
+displayDonors(loadDonors());
+
 </script>
 
 </body>
