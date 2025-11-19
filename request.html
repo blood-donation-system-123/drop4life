@@ -127,11 +127,11 @@ document.getElementById("requestForm").addEventListener("submit", function(e) {
     matches.forEach(d => {
         box.innerHTML += `
             <div class="match-box">
-                <strong>${d.name} (${d.blood})</strong><br>
-                City: ${d.city}<br>
-                Contact: ${d.contact}<br>
-                Status: ${d.avail}
-            </div>
+    <strong>${d.name} (${d.blood})</strong><br>
+    City: ${d.city}<br>
+    Contact: ${d.contact}<br>
+</div>
+
         `;
     });
 });
