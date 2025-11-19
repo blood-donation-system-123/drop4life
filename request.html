@@ -56,13 +56,17 @@
             background: #ffeaea;
             border: 1px solid #b30000;
         }
+        .small-note {
+            font-size: 12px;
+            color: #444;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
 <header>Request Blood – Drop4Life</header>
 
-<!-- Navigation Bar -->
 <nav style="
     background:#b30000;
     padding:15px;
@@ -88,10 +92,10 @@
         </select>
 
         <label>City:</label>
-        <input id="reqCity" required>
+        <input id="reqCity" placeholder="Enter your city" required>
 
         <label>Your Contact:</label>
-        <input id="reqContact" required>
+        <input id="reqContact" placeholder="Phone number" required>
 
         <button type="submit">Find Donors</button>
     </form>
@@ -109,27 +113,45 @@ function getDonors() {
 document.getElementById("requestForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    let blood = document.getElementById("reqBlood").value;
+    let blood = document.getElementById("reqBlood").value.trim();
     let city = document.getElementById("reqCity").value.trim().toLowerCase();
 
     let donors = getDonors();
 
+    // Clean city in donor record also
+    donors = donors.map(d => ({
+        ...d,
+        city: d.city.trim().toLowerCase()
+    }));
+
+    // Save cleaned data back (fixes old wrong data)
+    localStorage.setItem("drop4life_donors", JSON.stringify(donors));
+
     // first: exact city + blood match
-    let matches = donors.filter(d => d.blood === blood && d.city === city && d.avail === "available");
+    let matches = donors.filter(d =>
+        d.blood === blood &&
+        d.city === city &&
+        d.avail === "available"
+    );
 
     // second: match blood only (fallback)
+    let fallbackMatches = [];
     if (matches.length === 0) {
-        matches = donors.filter(d => d.blood === blood && d.avail === "available");
+        fallbackMatches = donors.filter(d =>
+            d.blood === blood &&
+            d.avail === "available"
+        );
     }
 
     let box = document.getElementById("matches");
     box.innerHTML = "";
 
-    if (matches.length === 0) {
+    if (matches.length === 0 && fallbackMatches.length === 0) {
         box.innerHTML = "<p>No matching donors found.</p>";
         return;
     }
 
+    // Show exact matches
     matches.forEach(d => {
         box.innerHTML += `
             <div class="match-box">
@@ -140,8 +162,25 @@ document.getElementById("requestForm").addEventListener("submit", function(e) {
             </div>
         `;
     });
+
+    // Show fallback matches WITH NOTE
+    if (matches.length === 0 && fallbackMatches.length > 0) {
+        box.innerHTML += `<p class="small-note"><i>No donor found in your city. Showing donors from other cities with same blood group:</i></p>`;
+        fallbackMatches.forEach(d => {
+            box.innerHTML += `
+                <div class="match-box">
+                    <strong>${d.name} (${d.blood})</strong><br>
+                    City: ${d.city}<br>
+                    Contact: ${d.contact}<br>
+                    Status: ${d.avail}
+                </div>
+            `;
+        });
+    }
+
 });
 </script>
 
 </body>
 </html>
+
