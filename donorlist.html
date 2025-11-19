@@ -80,7 +80,8 @@
 
 <script>
 function loadDonors() {
-    let donors = JSON.parse(localStorage.getItem("donors")) || [];
+    // ✔ FIXED STORAGE KEY
+    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
     let table = document.getElementById("donorTable");
 
     table.innerHTML = "";
