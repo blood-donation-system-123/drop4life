@@ -22,33 +22,31 @@
 
         form {
             background: white;
-            padding: 25px;
-            width: 350px;
-            margin: 30px auto;
+            width: 90%;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
         }
 
-        input, select {
+        input, select, button {
             width: 90%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 16px;
         }
 
         button {
-            padding: 12px 20px;
             background: #b30000;
             color: white;
-            border: none;
-            font-size: 18px;
-            border-radius: 6px;
             cursor: pointer;
         }
 
         button:hover {
-            background: #990000;
+            background: #800000;
         }
     </style>
 </head>
@@ -58,27 +56,26 @@
     Register as Donor – Drop4Life
 </header>
 
-<!-- NAVIGATION BAR -->
+<!-- Navigation Bar -->
 <nav style="
     background:#b30000;
     padding:15px;
     text-align:center;
-    font-family: Arial, sans-serif;
 ">
-    <a href="main.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Home</a>
-    <a href="donor.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Register Donor</a>
-    <a href="request.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Blood Request</a>
-    <a href="donorlist.html" style="color:white; margin:0 15px; text-decoration:none; font-size:18px;">Donor List</a>
+    <a href="main.html" style="color:white; margin:0 15px; text-decoration:none;">Home</a>
+    <a href="donor.html" style="color:white; margin:0 15px; text-decoration:none;">Register Donor</a>
+    <a href="request.html" style="color:white; margin:0 15px; text-decoration:none;">Blood Request</a>
+    <a href="donorlist.html" style="color:white; margin:0 15px; text-decoration:none;">Donor List</a>
 </nav>
 
-<form id="donorForm">
+<form onsubmit="saveDonor(event)">
     <h2>Donor Registration</h2>
 
     <input type="text" id="name" placeholder="Full Name" required>
-    <input type="number" id="age" placeholder="Age" required>
-
-    <select id="blood" required>
-        <option value="">Select Blood Group</option>
+    <input type="number" id="age" placeholder="Age" required min="18" max="65">
+    
+    <select id="bloodGroup">
+        <option value="" disabled selected>Select Blood Group</option>
         <option>A+</option><option>A-</option>
         <option>B+</option><option>B-</option>
         <option>O+</option><option>O-</option>
@@ -86,40 +83,30 @@
     </select>
 
     <input type="text" id="city" placeholder="City" required>
-    <input type="text" id="contact" placeholder="Phone Number" required>
+    <input type="text" id="phone" placeholder="Phone Number" required>
 
-    <button type="button" onclick="saveDonor()">Submit</button>
+    <button type="submit">Register</button>
 </form>
 
 <script>
-function saveDonor() {
-    let name = document.getElementById("name").value.trim();
-    let age = document.getElementById("age").value.trim();
-    let blood = document.getElementById("blood").value.trim();
-    let city = document.getElementById("city").value.trim().toLowerCase();
-    let contact = document.getElementById("contact").value.trim();
+function saveDonor(event) {
+    event.preventDefault();
 
-    if (!name || !age || !blood || !city || !contact) {
-        alert("Please fill all fields!");
-        return;
-    }
+    let donors = JSON.parse(localStorage.getItem("donors")) || [];
 
     let donor = {
-        name: name,
-        age: age,
-        blood: blood,
-        city: city,
-        contact: contact,
-        avail: "available"
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        bloodGroup: document.getElementById("bloodGroup").value,
+        city: document.getElementById("city").value.toLowerCase(),
+        phone: document.getElementById("phone").value
     };
 
-    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
     donors.push(donor);
-    localStorage.setItem("drop4life_donors", JSON.stringify(donors));
+    localStorage.setItem("donors", JSON.stringify(donors));
 
     alert("Donor Registered Successfully!");
-
-    document.getElementById("donorForm").reset();
+    event.target.reset();
 }
 </script>
 
