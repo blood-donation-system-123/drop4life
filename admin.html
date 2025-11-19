@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel - Drop4Life</title>
+<style>
+    body { font-family: Arial; background:#f7f7f7; padding:20px; }
+    .box { background:white; padding:20px; border-radius:10px; width:90%; max-width:500px; margin:auto; }
+    input { width:100%; padding:10px; margin:10px 0; }
+    button { width:100%; padding:12px; background:#b30000; color:white; border:none; font-size:18px; }
+    .card { background:white; padding:15px; border-radius:10px; margin:10px 0; }
+    .btn-small {
+        padding:6px 10px; background:#b30000; color:white;
+        border:none; border-radius:5px; font-size:12px; cursor:pointer;
+        margin-right:5px;
+    }
+</style>
+</head>
+<body>
+
+<h2>Admin Login</h2>
+
+<div class="box" id="loginBox">
+    <input type="password" id="adminPass" placeholder="Enter admin password">
+    <button onclick="loginAdmin()">Login</button>
+</div>
+
+<div id="adminPanel" style="display:none;">
+    <h2>Admin Panel</h2>
+    <div id="donorList"></div>
+</div>
+
+<script>
+function loginAdmin() {
+    let pass = document.getElementById("adminPass").value;
+    if (pass === "admin123") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadDonors();
+    } else {
+        alert("Wrong password!");
+    }
+}
+
+function loadDonors() {
+    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
+    let box = document.getElementById("donorList");
+    box.innerHTML = "";
+
+    if (donors.length === 0) {
+        box.innerHTML = "<p>No donors yet.</p>";
+        return;
+    }
+
+    donors.forEach((d, index) => {
+        box.innerHTML += `
+            <div class="card">
+                <b>${d.name}</b> (${d.blood})<br>
+                City: ${d.city}<br>
+                Phone: ${d.phone}<br>
+                Status: ${d.avail}<br><br>
+
+                <button class="btn-small" onclick="toggleStatus(${index})">
+                    Toggle Status
+                </button>
+
+                <button class="btn-small" onclick="deleteDonor(${index})">
+                    Delete
+                </button>
+            </div>
+        `;
+    });
+}
+
+function toggleStatus(i) {
+    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
+    donors[i].avail = (donors[i].avail === "available") ? "not available" : "available";
+    localStorage.setItem("drop4life_donors", JSON.stringify(donors));
+    loadDonors();
+}
+
+function deleteDonor(i) {
+    let donors = JSON.parse(localStorage.getItem("drop4life_donors")) || [];
+    donors.splice(i, 1);
+    localStorage.setItem("drop4life_donors", JSON.stringify(donors));
+    loadDonors();
+}
+</script>
+
+</body>
+</html>
