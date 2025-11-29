@@ -1,99 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DROP4LIFE – Blood Donation System</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f8f8;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-
-    header {
-      background: #b30000;
-      color: white;
-      padding: 20px;
-      font-size: 26px;
-      font-weight: bold;
-    }
-
-    nav {
-      background: #990000;
-      padding: 12px;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 15px;
-      font-size: 18px;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      background: white;
-      width: 90%;
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px #ccc;
-    }
-
-    .btn {
-      display: block;
-      width: 90%;
-      padding: 12px;
-      margin: 12px auto;
-      border-radius: 8px;
-      color: white;
-      font-size: 18px;
-      text-decoration: none;
-    }
-
-    .red { background: #cc0000; }
-    .orange { background: #ff6600; }
-    .yellow { background: #ffcc00; color: black; }
-    .blue { background: #0066cc; }
-    .green { background: #009900; }
-    .purple { background: #6600cc; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drop4Life - Blood Donation System</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div class="navbar">
+        <h2>Drop4Life</h2>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="donor.html">Register as Donor</a></li>
+            <li><a href="donorlist.html">Donor List</a></li>
+            <li><a href="request.html">Request Blood</a></li>
+            <li><a href="howitworks.html">How It Works</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="admin.html">Admin</a></li>
+        </ul>
+    </div>
 
-<header>DROP4LIFE – Blood Donation System</header>
-
-<nav>
-  <a href="index.html">Home</a>
-  <a href="donor.html">Register Donor</a>
-  <a href="request.html">Blood Request</a>
-  <a href="donorlist.html">Donor List</a>
-  <a href="howworks.html">How It Works</a>
-  <a href="contact.html">Contact / Help</a>
-  <a href="bloodchart.html">Blood Chart</a>
-</nav>
-
-<div class="container">
-  <h2>Welcome to Drop4Life</h2>
-  <p>Select a feature below:</p>
-
-  <a class="btn red" href="donor.html">Register as Donor</a>
-  <a class="btn orange" href="request.html">Request Blood</a>
-  <a class="btn yellow" href="donorlist.html">View Donor List</a>
-  <a class="btn blue" href="howworks.html">How Blood Donation Works</a>
-  <a class="btn green" href="contact.html">Contact / Help</a>
-  <a class="btn purple" href="bloodchart.html">Blood Types & Chart</a>
-</div>
-
+    <div class="home-section">
+        <h1>Welcome to Drop4Life</h1>
+        <p>Your small step can save a life.</p>
+        <a href="donor.html" class="btn">Become a Donor</a>
+    </div>
 </body>
 </html>
-   
+
